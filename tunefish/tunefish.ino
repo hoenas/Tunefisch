@@ -1,4 +1,5 @@
 #include "arduinoFFT.h"
+#include "tones_lookup.h"
 
 arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 /*
@@ -49,5 +50,11 @@ void loop()
   }
 
   double x = FFT.MajorPeak(vReal, samples, samplingFrequency);
-  Serial.println(x);
+  auto lookup = tones_lookup::get_nearest_tone(44.0);
+  Serial.println(lookup.name);
+  Serial.println(lookup.frequency);
+  Serial.println(lookup.delta_in_cents);
+
+  while (true)
+    ;
 }
