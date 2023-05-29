@@ -1,5 +1,4 @@
 #include "arduinoFFT.h"
-#include "tones_lookup.h"
 
 arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 /*

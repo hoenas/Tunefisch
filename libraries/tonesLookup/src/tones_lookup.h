@@ -1,7 +1,11 @@
 #ifndef tones_lookup_h /* Prevent loading library twice */
 #define tones_lookup_h
 
-#include "types.h"
+struct Tone
+{
+    char name[8];
+    double frequency;
+};
 
 Tone tones[] = {
     {"E6", 1318.51},
