@@ -1,25 +1,77 @@
-/*
-
-  FFT library
-  Copyright (C) 2010 Didier Longueville
-  Copyright (C) 2014 Enrique Condes
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
 #ifndef tones_lookup_h /* Prevent loading library twice */
 #define tones_lookup_h
+
+#include "types.h"
+
+Tone tones[] = {
+    {"E6", 1318.51},
+    {"D#6", 1244.51},
+    {"D6", 1174.66},
+    {"C#6/Db6", 1108.73},
+    {"C6", 1046.50},
+    {"B5", 987.767},
+    {"A#5/Bb5", 932.328},
+    {"A5", 880.0},
+    {"G#5/Ab5", 830.609},
+    {"G5", 783.991},
+    {"F#5/Gb5", 739.989},
+    {"F5", 698.456},
+    {"E5", 659.255},
+    {"D#5/Eb5", 622.254},
+    {"D5", 587.330},
+    {"C#5/Db5", 554.365},
+    {"C5", 523.251},
+    {"B4", 493.883},
+    {"A#4/Bb4", 466.164},
+    {"A4", 440.0},
+    {"G#4/Ab4", 415.305},
+    {"G4", 391.995},
+    {"F#4/Gb4", 369.994},
+    {"F4", 349.228},
+    {"E4", 329.628},
+    {"D#4/Eb4", 311.127},
+    {"D4", 293.665},
+    {"C#4/Db4", 277.183},
+    {"C4", 261.626},
+    {"B3", 246.942},
+    {"A#3/Bb3", 233.082},
+    {"A3", 220.0},
+    {"G#3/Ab3", 207.652},
+    {"G3", 195.998},
+    {"F#3/Gb3", 184.997},
+    {"F3", 174.614},
+    {"E3", 164.814},
+    {"D#3/Eb3", 155.563},
+    {"D3", 146.832},
+    {"C#3/Db3", 138.591},
+    {"C3", 130.813},
+    {"B2", 123.471},
+    {"A#2/Bb2", 116.541},
+    {"A2", 110.0},
+    {"G#2/Ab2", 103.826},
+    {"G2", 97.9989},
+    {"F#2/Gb2", 92.4986},
+    {"F2", 87.3071},
+    {"E2", 82.4069},
+    {"D#2/Eb2", 77.7817},
+    {"D2", 73.4162},
+    {"C#2/Db2", 69.2957},
+    {"C2", 65.4064},
+    {"B1", 61.7354},
+    {"A#1/Bb1", 58.2705},
+    {"A1", 55.0},
+    {"G#1/Ab1", 51.9131},
+    {"G1", 48.9994},
+    {"F#1/Gb1", 46.2493},
+    {"F1", 43.6535},
+    {"E1", 41.2034},
+    {"D#1/Eb1", 38.8909},
+    {"D1", 36.7081},
+    {"C#1/Db1", 34.6478},
+    {"C1", 32.7032},
+    {"B0", 30.8677},
+    {"A#0/Bb0", 29.1352},
+    {"A0", 27.5},
+};
 
 #endif
