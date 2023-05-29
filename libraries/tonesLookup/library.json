@@ -1,0 +1,24 @@
+{
+  "name": "tonesLookup",
+  "keywords": "tone, tones, frequency, lookup, table",
+  "description": "A library providing a lookup table for tones.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hoenas/Tunefisch"
+  },
+  "authors": [
+    {
+      "name": "Jonas Maas",
+      "email": "maasjonas@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "version": "0.0.1",
+  "frameworks": [
+    "arduino",
+    "mbed",
+    "espidf"
+  ],
+  "platforms": "*",
+  "headers": "arduinoFFT.h"
+}
