@@ -29,6 +29,7 @@ void calculateFFT()
   /* Print the results of the simulated sampling according to time */
   FFT.Windowing(vReal, samples, FFT_WIN_TYP_HAMMING, FFT_FORWARD); /* Weigh data */
   FFT.Compute(vReal, vImag, samples, FFT_FORWARD);                 /* Compute FFT */
+  FFT.DCRemoval();            
   FFT.ComplexToMagnitude(vReal, vImag, samples);                   /* Compute magnitudes */
 }
 
@@ -40,12 +41,10 @@ void findPeaks()
 void loop()
 {
   calculateFFT();
-  double x = FFT.MajorPeak(vReal, samples, samplingFrequency);
-  auto lookup = tones_lookup::get_nearest_tone(44.0);
-  Serial.println(lookup.name);
-  Serial.println(lookup.frequency);
-  Serial.println(lookup.delta_in_cents);
-
-  while (true)
-    ;
+  // double x = FFT.MajorPeak(vReal, samples, samplingFrequency);
+  Serial.println(millis());
+  // auto lookup = tones_lookup::get_nearest_tone(44.0);
+  // Serial.println(lookup.name);
+  // Serial.println(lookup.frequency);
+  // Serial.println(lookup.delta_in_cents);
 }

@@ -1,21 +1,21 @@
 /*
 
-	FFT library
-	Copyright (C) 2010 Didier Longueville
-	Copyright (C) 2014 Enrique Condes
+  FFT library
+  Copyright (C) 2010 Didier Longueville
+  Copyright (C) 2014 Enrique Condes
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -53,9 +53,14 @@
 #define sqrt_internal sqrt
 #endif
 
-enum class FFTDirection { Reverse, Forward };
+enum class FFTDirection
+{
+  Reverse,
+  Forward
+};
 
-enum class FFTWindow {
+enum class FFTWindow
+{
   Rectangle,        // rectangle (Box car)
   Hamming,          // hamming
   Hann,             // hann
@@ -79,9 +84,9 @@ enum class FFTWindow {
 #define FFT_WIN_TYP_TRIANGLE FFTWindow::Triangle   /* triangle (Bartlett) */
 #define FFT_WIN_TYP_NUTTALL FFTWindow::Nuttall     /* nuttall */
 #define FFT_WIN_TYP_BLACKMAN FFTWindow::Blackman   /* blackman */
-#define FFT_WIN_TYP_BLACKMAN_NUTTALL                                           \
+#define FFT_WIN_TYP_BLACKMAN_NUTTALL \
   FFTWindow::Blackman_Nuttall /* blackman nuttall */
-#define FFT_WIN_TYP_BLACKMAN_HARRIS                                            \
+#define FFT_WIN_TYP_BLACKMAN_HARRIS \
   FFTWindow::Blackman_Harris                    /* blackman harris*/
 #define FFT_WIN_TYP_FLT_TOP FFTWindow::Flat_top /* flat top */
 #define FFT_WIN_TYP_WELCH FFTWindow::Welch      /* welch */
@@ -102,7 +107,8 @@ static const double _c2[] PROGMEM = {
     0.0015339802, 0.0007669903, 0.0003834952, 0.0001917476, 0.0000958738,
     0.0000479369, 0.0000239684};
 #endif
-class arduinoFFT {
+class arduinoFFT
+{
 public:
   /* Constructor */
   arduinoFFT(void);
@@ -133,7 +139,9 @@ public:
   void MajorPeak(double *f, double *v);
   void Windowing(FFTWindow windowType, FFTDirection dir);
 
+  double MajorPeakParabolaAround(uint16_t IndexOfMaxY);
   double MajorPeakParabola();
+  double *NMajorPeaksParabola(int n);
 
 private:
   /* Variables */

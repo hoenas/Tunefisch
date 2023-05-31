@@ -1,32 +1,34 @@
 /*
 
-	FFT library
-	Copyright (C) 2010 Didier Longueville
-	Copyright (C) 2014 Enrique Condes
+  FFT library
+  Copyright (C) 2010 Didier Longueville
+  Copyright (C) 2014 Enrique Condes
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
 #include "arduinoFFT.h"
 
-arduinoFFT::arduinoFFT(void) { // Constructor
+arduinoFFT::arduinoFFT(void){
+// Constructor
 #warning("This method is deprecated and may be removed on future revisions.")
 }
 
 arduinoFFT::arduinoFFT(double *vReal, double *vImag, uint16_t samples,
-                       double samplingFrequency) { // Constructor
+                       double samplingFrequency)
+{ // Constructor
   this->_vReal = vReal;
   this->_vImag = vImag;
   this->_samples = samples;
@@ -34,30 +36,36 @@ arduinoFFT::arduinoFFT(double *vReal, double *vImag, uint16_t samples,
   this->_power = Exponent(samples);
 }
 
-arduinoFFT::~arduinoFFT(void) {
+arduinoFFT::~arduinoFFT(void)
+{
   // Destructor
 }
 
 uint8_t arduinoFFT::Revision(void) { return (FFT_LIB_REV); }
 
 void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples,
-                         FFTDirection dir) {
+                         FFTDirection dir)
+{
 #warning("This method is deprecated and may be removed on future revisions.")
   Compute(vReal, vImag, samples, Exponent(samples), dir);
 }
 
-void arduinoFFT::Compute(FFTDirection dir) {
+void arduinoFFT::Compute(FFTDirection dir)
+{
   // Computes in-place complex-to-complex FFT /
   // Reverse bits /
   uint16_t j = 0;
-  for (uint16_t i = 0; i < (this->_samples - 1); i++) {
-    if (i < j) {
+  for (uint16_t i = 0; i < (this->_samples - 1); i++)
+  {
+    if (i < j)
+    {
       Swap(&this->_vReal[i], &this->_vReal[j]);
       if (dir == FFT_REVERSE)
         Swap(&this->_vImag[i], &this->_vImag[j]);
     }
     uint16_t k = (this->_samples >> 1);
-    while (k <= j) {
+    while (k <= j)
+    {
       j -= k;
       k >>= 1;
     }
@@ -70,13 +78,16 @@ void arduinoFFT::Compute(FFTDirection dir) {
   double c1 = -1.0;
   double c2 = 0.0;
   uint16_t l2 = 1;
-  for (uint8_t l = 0; (l < this->_power); l++) {
+  for (uint8_t l = 0; (l < this->_power); l++)
+  {
     uint16_t l1 = l2;
     l2 <<= 1;
     double u1 = 1.0;
     double u2 = 0.0;
-    for (j = 0; j < l1; j++) {
-      for (uint16_t i = j; i < this->_samples; i += l2) {
+    for (j = 0; j < l1; j++)
+    {
+      for (uint16_t i = j; i < this->_samples; i += l2)
+      {
         uint16_t i1 = i + l1;
         double t1 = u1 * this->_vReal[i1] - u2 * this->_vImag[i1];
         double t2 = u1 * this->_vImag[i1] + u2 * this->_vReal[i1];
@@ -97,13 +108,16 @@ void arduinoFFT::Compute(FFTDirection dir) {
     c2 = sqrt((1.0 - c1) / 2.0);
     c1 = sqrt((1.0 + c1) / 2.0);
 #endif
-    if (dir == FFT_FORWARD) {
+    if (dir == FFT_FORWARD)
+    {
       c2 = -c2;
     }
   }
   // Scaling for reverse transform /
-  if (dir != FFT_FORWARD) {
-    for (uint16_t i = 0; i < this->_samples; i++) {
+  if (dir != FFT_FORWARD)
+  {
+    for (uint16_t i = 0; i < this->_samples; i++)
+    {
       this->_vReal[i] /= this->_samples;
       this->_vImag[i] /= this->_samples;
     }
@@ -111,19 +125,23 @@ void arduinoFFT::Compute(FFTDirection dir) {
 }
 
 void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples,
-                         uint8_t power, FFTDirection dir) {
+                         uint8_t power, FFTDirection dir)
+{
 // Computes in-place complex-to-complex FFT
 // Reverse bits
 #warning("This method is deprecated and may be removed on future revisions.")
   uint16_t j = 0;
-  for (uint16_t i = 0; i < (samples - 1); i++) {
-    if (i < j) {
+  for (uint16_t i = 0; i < (samples - 1); i++)
+  {
+    if (i < j)
+    {
       Swap(&vReal[i], &vReal[j]);
       if (dir == FFT_REVERSE)
         Swap(&vImag[i], &vImag[j]);
     }
     uint16_t k = (samples >> 1);
-    while (k <= j) {
+    while (k <= j)
+    {
       j -= k;
       k >>= 1;
     }
@@ -136,13 +154,16 @@ void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples,
   double c1 = -1.0;
   double c2 = 0.0;
   uint16_t l2 = 1;
-  for (uint8_t l = 0; (l < power); l++) {
+  for (uint8_t l = 0; (l < power); l++)
+  {
     uint16_t l1 = l2;
     l2 <<= 1;
     double u1 = 1.0;
     double u2 = 0.0;
-    for (j = 0; j < l1; j++) {
-      for (uint16_t i = j; i < samples; i += l2) {
+    for (j = 0; j < l1; j++)
+    {
+      for (uint16_t i = j; i < samples; i += l2)
+      {
         uint16_t i1 = i + l1;
         double t1 = u1 * vReal[i1] - u2 * vImag[i1];
         double t2 = u1 * vImag[i1] + u2 * vReal[i1];
@@ -163,72 +184,88 @@ void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples,
     c2 = sqrt((1.0 - c1) / 2.0);
     c1 = sqrt((1.0 + c1) / 2.0);
 #endif
-    if (dir == FFT_FORWARD) {
+    if (dir == FFT_FORWARD)
+    {
       c2 = -c2;
     }
   }
   // Scaling for reverse transform
-  if (dir != FFT_FORWARD) {
-    for (uint16_t i = 0; i < samples; i++) {
+  if (dir != FFT_FORWARD)
+  {
+    for (uint16_t i = 0; i < samples; i++)
+    {
       vReal[i] /= samples;
       vImag[i] /= samples;
     }
   }
 }
 
-void arduinoFFT::ComplexToMagnitude() {
+void arduinoFFT::ComplexToMagnitude()
+{
   // vM is half the size of vReal and vImag
-  for (uint16_t i = 0; i < this->_samples; i++) {
+  for (uint16_t i = 0; i < this->_samples; i++)
+  {
     this->_vReal[i] = sqrt(sq(this->_vReal[i]) + sq(this->_vImag[i]));
   }
 }
 
 void arduinoFFT::ComplexToMagnitude(double *vReal, double *vImag,
-                                    uint16_t samples) {
+                                    uint16_t samples)
+{
 // vM is half the size of vReal and vImag
 #warning("This method is deprecated and may be removed on future revisions.")
-  for (uint16_t i = 0; i < samples; i++) {
+  for (uint16_t i = 0; i < samples; i++)
+  {
     vReal[i] = sqrt(sq(vReal[i]) + sq(vImag[i]));
   }
 }
 
-void arduinoFFT::DCRemoval() {
+void arduinoFFT::DCRemoval()
+{
   // calculate the mean of vData
   double mean = 0;
-  for (uint16_t i = 0; i < this->_samples; i++) {
+  for (uint16_t i = 0; i < this->_samples; i++)
+  {
     mean += this->_vReal[i];
   }
   mean /= this->_samples;
   // Subtract the mean from vData
-  for (uint16_t i = 0; i < this->_samples; i++) {
+  for (uint16_t i = 0; i < this->_samples; i++)
+  {
     this->_vReal[i] -= mean;
   }
 }
 
-void arduinoFFT::DCRemoval(double *vData, uint16_t samples) {
+void arduinoFFT::DCRemoval(double *vData, uint16_t samples)
+{
 // calculate the mean of vData
 #warning("This method is deprecated and may be removed on future revisions.")
   double mean = 0;
-  for (uint16_t i = 0; i < samples; i++) {
+  for (uint16_t i = 0; i < samples; i++)
+  {
     mean += vData[i];
   }
   mean /= samples;
   // Subtract the mean from vData
-  for (uint16_t i = 0; i < samples; i++) {
+  for (uint16_t i = 0; i < samples; i++)
+  {
     vData[i] -= mean;
   }
 }
 
-void arduinoFFT::Windowing(FFTWindow windowType, FFTDirection dir) {
+void arduinoFFT::Windowing(FFTWindow windowType, FFTDirection dir)
+{
   // Weighing factors are computed once before multiple use of FFT
   // The weighing function is symmetric; half the weighs are recorded
   double samplesMinusOne = (double(this->_samples) - 1.0);
-  for (uint16_t i = 0; i < (this->_samples >> 1); i++) {
+  for (uint16_t i = 0; i < (this->_samples >> 1); i++)
+  {
     double indexMinusOne = double(i);
     double ratio = (indexMinusOne / samplesMinusOne);
     double weighingFactor = 1.0;
     // Compute and record weighting factor
-    switch (windowType) {
+    switch (windowType)
+    {
     case FFT_WIN_TYP_RECTANGLE: // rectangle (box car)
       weighingFactor = 1.0;
       break;
@@ -277,10 +314,13 @@ void arduinoFFT::Windowing(FFTWindow windowType, FFTDirection dir) {
                                 (samplesMinusOne / 2.0));
       break;
     }
-    if (dir == FFT_FORWARD) {
+    if (dir == FFT_FORWARD)
+    {
       this->_vReal[i] *= weighingFactor;
       this->_vReal[this->_samples - (i + 1)] *= weighingFactor;
-    } else {
+    }
+    else
+    {
       this->_vReal[i] /= weighingFactor;
       this->_vReal[this->_samples - (i + 1)] /= weighingFactor;
     }
@@ -288,17 +328,20 @@ void arduinoFFT::Windowing(FFTWindow windowType, FFTDirection dir) {
 }
 
 void arduinoFFT::Windowing(double *vData, uint16_t samples,
-                           FFTWindow windowType, FFTDirection dir) {
+                           FFTWindow windowType, FFTDirection dir)
+{
 // Weighing factors are computed once before multiple use of FFT
 // The weighing function is symetric; half the weighs are recorded
 #warning("This method is deprecated and may be removed on future revisions.")
   double samplesMinusOne = (double(samples) - 1.0);
-  for (uint16_t i = 0; i < (samples >> 1); i++) {
+  for (uint16_t i = 0; i < (samples >> 1); i++)
+  {
     double indexMinusOne = double(i);
     double ratio = (indexMinusOne / samplesMinusOne);
     double weighingFactor = 1.0;
     // Compute and record weighting factor
-    switch (windowType) {
+    switch (windowType)
+    {
     case FFT_WIN_TYP_RECTANGLE: // rectangle (box car)
       weighingFactor = 1.0;
       break;
@@ -347,25 +390,32 @@ void arduinoFFT::Windowing(double *vData, uint16_t samples,
                                 (samplesMinusOne / 2.0));
       break;
     }
-    if (dir == FFT_FORWARD) {
+    if (dir == FFT_FORWARD)
+    {
       vData[i] *= weighingFactor;
       vData[samples - (i + 1)] *= weighingFactor;
-    } else {
+    }
+    else
+    {
       vData[i] /= weighingFactor;
       vData[samples - (i + 1)] /= weighingFactor;
     }
   }
 }
 
-double arduinoFFT::MajorPeak() {
+double arduinoFFT::MajorPeak()
+{
   double maxY = 0;
   uint16_t IndexOfMaxY = 0;
   // If sampling_frequency = 2 * max_frequency in signal,
   // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++) {
+  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
+  {
     if ((this->_vReal[i - 1] < this->_vReal[i]) &&
-        (this->_vReal[i] > this->_vReal[i + 1])) {
-      if (this->_vReal[i] > maxY) {
+        (this->_vReal[i] > this->_vReal[i + 1]))
+    {
+      if (this->_vReal[i] > maxY)
+      {
         maxY = this->_vReal[i];
         IndexOfMaxY = i;
       }
@@ -386,15 +436,19 @@ double arduinoFFT::MajorPeak() {
   return (interpolatedX);
 }
 
-void arduinoFFT::MajorPeak(double *f, double *v) {
+void arduinoFFT::MajorPeak(double *f, double *v)
+{
   double maxY = 0;
   uint16_t IndexOfMaxY = 0;
   // If sampling_frequency = 2 * max_frequency in signal,
   // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++) {
+  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
+  {
     if ((this->_vReal[i - 1] < this->_vReal[i]) &&
-        (this->_vReal[i] > this->_vReal[i + 1])) {
-      if (this->_vReal[i] > maxY) {
+        (this->_vReal[i] > this->_vReal[i + 1]))
+    {
+      if (this->_vReal[i] > maxY)
+      {
         maxY = this->_vReal[i];
         IndexOfMaxY = i;
       }
@@ -423,15 +477,19 @@ void arduinoFFT::MajorPeak(double *f, double *v) {
 }
 
 double arduinoFFT::MajorPeak(double *vD, uint16_t samples,
-                             double samplingFrequency) {
+                             double samplingFrequency)
+{
 #warning("This method is deprecated and may be removed on future revisions.")
   double maxY = 0;
   uint16_t IndexOfMaxY = 0;
   // If sampling_frequency = 2 * max_frequency in signal,
   // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((samples >> 1) + 1); i++) {
-    if ((vD[i - 1] < vD[i]) && (vD[i] > vD[i + 1])) {
-      if (vD[i] > maxY) {
+  for (uint16_t i = 1; i < ((samples >> 1) + 1); i++)
+  {
+    if ((vD[i - 1] < vD[i]) && (vD[i] > vD[i + 1]))
+    {
+      if (vD[i] > maxY)
+      {
         maxY = vD[i];
         IndexOfMaxY = i;
       }
@@ -450,15 +508,19 @@ double arduinoFFT::MajorPeak(double *vD, uint16_t samples,
 }
 
 void arduinoFFT::MajorPeak(double *vD, uint16_t samples,
-                           double samplingFrequency, double *f, double *v) {
+                           double samplingFrequency, double *f, double *v)
+{
 #warning("This method is deprecated and may be removed on future revisions.")
   double maxY = 0;
   uint16_t IndexOfMaxY = 0;
   // If sampling_frequency = 2 * max_frequency in signal,
   // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((samples >> 1) + 1); i++) {
-    if ((vD[i - 1] < vD[i]) && (vD[i] > vD[i + 1])) {
-      if (vD[i] > maxY) {
+  for (uint16_t i = 1; i < ((samples >> 1) + 1); i++)
+  {
+    if ((vD[i - 1] < vD[i]) && (vD[i] > vD[i + 1]))
+    {
+      if (vD[i] > maxY)
+      {
         maxY = vD[i];
         IndexOfMaxY = i;
       }
@@ -483,23 +545,11 @@ void arduinoFFT::MajorPeak(double *vD, uint16_t samples,
 #endif
 }
 
-double arduinoFFT::MajorPeakParabola() {
-  double maxY = 0;
-  uint16_t IndexOfMaxY = 0;
-  // If sampling_frequency = 2 * max_frequency in signal,
-  // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++) {
-    if ((this->_vReal[i - 1] < this->_vReal[i]) &&
-        (this->_vReal[i] > this->_vReal[i + 1])) {
-      if (this->_vReal[i] > maxY) {
-        maxY = this->_vReal[i];
-        IndexOfMaxY = i;
-      }
-    }
-  }
-
+double arduinoFFT::MajorPeakParabolaAround(uint16_t IndexOfMaxY)
+{
   double freq = 0;
-  if (IndexOfMaxY > 0) {
+  if (IndexOfMaxY > 0)
+  {
     // Assume the three points to be on a parabola
     double a, b, c;
     Parabola(IndexOfMaxY - 1, this->_vReal[IndexOfMaxY - 1], IndexOfMaxY,
@@ -519,8 +569,73 @@ double arduinoFFT::MajorPeakParabola() {
   return freq;
 }
 
+double arduinoFFT::MajorPeakParabola()
+{
+  double maxY = 0;
+  uint16_t IndexOfMaxY = 0;
+  // If sampling_frequency = 2 * max_frequency in signal,
+  // value would be stored at position samples/2
+  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
+  {
+    if ((this->_vReal[i - 1] < this->_vReal[i]) &&
+        (this->_vReal[i] > this->_vReal[i + 1]))
+    {
+      if (this->_vReal[i] > maxY)
+      {
+        maxY = this->_vReal[i];
+        IndexOfMaxY = i;
+      }
+    }
+  }
+  return MajorPeakParabolaAround(IndexOfMaxY);
+}
+
+double *arduinoFFT::NMajorPeaksParabola(int n)
+{
+  double foundPeaks[n] = {};
+  double smallestPeak = 0.0;
+  int smallestPeakIndex = 0;
+  int foundPeaksCount = 0;
+  // Find all n major peaks
+  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
+  {
+    // Check if we have a peak
+    if ((this->_vReal[i - 1] < this->_vReal[i]) &&
+        (this->_vReal[i] > this->_vReal[i + 1]))
+    {
+      // If we do not have enough peaks yet, fill in the current peak without checking
+      if (foundPeaksCount < n)
+      {
+        foundPeaks[foundPeaksCount] = this->_vReal[i];
+        foundPeaksCount++;
+      }
+      else if (this->_vReal[i] > smallestPeak)
+      {
+        foundPeaks[smallestPeakIndex] = this->_vReal[i];
+        smallestPeak = this->_vReal[i];
+      }
+      else
+      {
+        // Go to the next iteration if there was no new peak
+        continue;
+      }
+      // Update smallestPeak
+      for (uint16_t k = 0; i < n; i++)
+      {
+        if (smallestPeak > foundPeaks[k])
+        {
+          smallestPeak = foundPeaks[k];
+          smallestPeakIndex = k;
+        }
+      }
+    }
+  }
+  return foundPeaks;
+}
+
 void arduinoFFT::Parabola(double x1, double y1, double x2, double y2, double x3,
-                          double y3, double *a, double *b, double *c) {
+                          double y3, double *a, double *b, double *c)
+{
   double reversed_denom = 1 / ((x1 - x2) * (x1 - x3) * (x2 - x3));
 
   *a = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) * reversed_denom;
@@ -531,7 +646,8 @@ void arduinoFFT::Parabola(double x1, double y1, double x2, double y2, double x3,
        reversed_denom;
 }
 
-uint8_t arduinoFFT::Exponent(uint16_t value) {
+uint8_t arduinoFFT::Exponent(uint16_t value)
+{
 #warning("This method may not be accessible on future revisions.")
   // Calculates the base 2 logarithm of a value
   uint8_t result = 0;
@@ -542,7 +658,8 @@ uint8_t arduinoFFT::Exponent(uint16_t value) {
 
 // Private functions
 
-void arduinoFFT::Swap(double *x, double *y) {
+void arduinoFFT::Swap(double *x, double *y)
+{
   double temp = *x;
   *x = *y;
   *y = temp;
