@@ -575,12 +575,13 @@ uint16_t *arduinoFFT::FindMajorPeakIndexes(uint16_t n)
   int smallestPeakIndex = 0;
   int foundPeaksCount = 0;
   // Find all n major peaks
-  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
+  for (uint16_t i = 1; i < this->_samples-1; i++) // TODO: THIS LOOP IS CAUSING A PANIC EVEN WITHOUT CONTENT
   {
     // Check if we have a peak
     if ((this->_vReal[i - 1] < this->_vReal[i]) &&
         (this->_vReal[i] > this->_vReal[i + 1]))
     {
+      Serial.println("FOUND PEAK");
       // If we do not have enough peaks yet, fill in the current peak without checking
       if (foundPeaksCount < n)
       {
@@ -677,7 +678,7 @@ double *arduinoFFT::NMajorPeaksQuinnsEstimator(int n)
   uint16_t* peakIndexes = this->FindMajorPeakIndexes(n);
   double foundPeaks[n] = {};
   // Find all n major peaks
-  for (uint16_t i = 1; i < n; i++)
+  for (uint16_t i = 0; i < n; i++)
   {
     foundPeaks[i] = this->QuinnsEstimator(peakIndexes[i]);
   }
