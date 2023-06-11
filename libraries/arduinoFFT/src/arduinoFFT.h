@@ -140,8 +140,13 @@ public:
   void Windowing(FFTWindow windowType, FFTDirection dir);
 
   double MajorPeakParabolaAround(uint16_t IndexOfMaxY);
-  double MajorPeakParabola();
+  uint16_t *FindMajorPeakIndexes(uint16_t n);
+
+  double MajorPeakParabola(uint16_t n);
   double *NMajorPeaksParabola(int n);
+  double *FindMajorPeaksParabola(uint16_t n);
+  double MajorPeakQuinnsEstimator();
+  double *NMajorPeaksQuinnsEstimator(int n);
 
 private:
   /* Variables */
@@ -151,9 +156,12 @@ private:
   double *_vImag;
   uint8_t _power;
   /* Functions */
+  double IndexToFrequency(double x);
   void Swap(double *x, double *y);
   void Parabola(double x1, double y1, double x2, double y2, double x3,
                 double y3, double *a, double *b, double *c);
+  double Tau(double x);
+  double QuinnsEstimator(uint16_t k);
 };
 
 #endif

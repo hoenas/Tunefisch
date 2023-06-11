@@ -545,54 +545,32 @@ void arduinoFFT::MajorPeak(double *vD, uint16_t samples,
 #endif
 }
 
+double arduinoFFT::IndexToFrequency(double x)
+{
+  return (x * this->_samplingFrequency) / (this->_samples);
+}
+
 double arduinoFFT::MajorPeakParabolaAround(uint16_t IndexOfMaxY)
 {
   double freq = 0;
-  if (IndexOfMaxY > 0)
-  {
-    // Assume the three points to be on a parabola
-    double a, b, c;
-    Parabola(IndexOfMaxY - 1, this->_vReal[IndexOfMaxY - 1], IndexOfMaxY,
-             this->_vReal[IndexOfMaxY], IndexOfMaxY + 1,
-             this->_vReal[IndexOfMaxY + 1], &a, &b, &c);
+  // Assume the three points to be on a parabola
+  double a, b, c;
+  Parabola(IndexOfMaxY - 1, this->_vReal[IndexOfMaxY - 1], IndexOfMaxY,
+           this->_vReal[IndexOfMaxY], IndexOfMaxY + 1,
+           this->_vReal[IndexOfMaxY + 1], &a, &b, &c);
 
-    // Peak is at the middle of the parabola
-    double x = -b / (2 * a);
+  // Peak is at the middle of the parabola
+  double x = -b / (2 * a);
 
-    // And magnitude is at the extrema of the parabola if you want It...
-    // double y = a*x*x+b*x+c;
-
-    // Convert to frequency
-    freq = (x * this->_samplingFrequency) / (this->_samples);
-  }
-
-  return freq;
+  // And magnitude is at the extrema of the parabola if you want It...
+  // double y = a*x*x+b*x+c;
+  return this->IndexToFrequency(x);
 }
 
-double arduinoFFT::MajorPeakParabola()
-{
-  double maxY = 0;
-  uint16_t IndexOfMaxY = 0;
-  // If sampling_frequency = 2 * max_frequency in signal,
-  // value would be stored at position samples/2
-  for (uint16_t i = 1; i < ((this->_samples >> 1) + 1); i++)
-  {
-    if ((this->_vReal[i - 1] < this->_vReal[i]) &&
-        (this->_vReal[i] > this->_vReal[i + 1]))
-    {
-      if (this->_vReal[i] > maxY)
-      {
-        maxY = this->_vReal[i];
-        IndexOfMaxY = i;
-      }
-    }
-  }
-  return MajorPeakParabolaAround(IndexOfMaxY);
-}
-
-double *arduinoFFT::NMajorPeaksParabola(int n)
+uint16_t *arduinoFFT::FindMajorPeakIndexes(uint16_t n)
 {
   double foundPeaks[n] = {};
+  uint16_t foundPeakIndexes[n] = {};
   double smallestPeak = 0.0;
   int smallestPeakIndex = 0;
   int foundPeaksCount = 0;
@@ -607,11 +585,13 @@ double *arduinoFFT::NMajorPeaksParabola(int n)
       if (foundPeaksCount < n)
       {
         foundPeaks[foundPeaksCount] = this->_vReal[i];
+        foundPeakIndexes[foundPeaksCount] = i;
         foundPeaksCount++;
       }
       else if (this->_vReal[i] > smallestPeak)
       {
         foundPeaks[smallestPeakIndex] = this->_vReal[i];
+        foundPeakIndexes[smallestPeakIndex] = i;
         smallestPeak = this->_vReal[i];
       }
       else
@@ -630,6 +610,23 @@ double *arduinoFFT::NMajorPeaksParabola(int n)
       }
     }
   }
+  return foundPeakIndexes;
+}
+
+double arduinoFFT::MajorPeakParabola(uint16_t n)
+{
+  return FindMajorPeaksParabola(1)[0];
+}
+
+double *arduinoFFT::FindMajorPeaksParabola(uint16_t n)
+{
+  uint16_t* peakIndexes = this->FindMajorPeakIndexes(n);
+  double foundPeaks[n] = {};
+  // Find all n major peaks
+  for (uint16_t i = 1; i < n; i++)
+  {
+    foundPeaks[i] = this->MajorPeakParabolaAround(peakIndexes[i]);
+  }
   return foundPeaks;
 }
 
@@ -644,6 +641,48 @@ void arduinoFFT::Parabola(double x1, double y1, double x2, double y2, double x3,
   *c = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 +
         x1 * x2 * (x1 - x2) * y3) *
        reversed_denom;
+}
+
+double arduinoFFT::Tau(double x)
+{
+  // https://dspguru.com/dsp/howtos/how-to-interpolate-fft-peak/
+  // tau(x) = 1/4 * log(3x^2 + 6x + 1) - sqrt(6)/24 * log((x + 1 - sqrt(2/3))  /  (x + 1 + sqrt(2/3)))
+  return 0.25 * log(3.0 * x * x + 6.0 * x + 1) - sqrt(6.0) / 24.0 * log((x + 1 - sqrt(2.0 / 3.0)) / (x + 1 + sqrt(2.0 / 3.0)));
+}
+
+double arduinoFFT::QuinnsEstimator(uint16_t k)
+{
+  // https://dspguru.com/dsp/howtos/how-to-interpolate-fft-peak/
+  // Quinn’s Second Estimator:
+  //   ap = (X[k + 1].r * X[k].r + X[k+1].i * X[k].i)  /  (X[k].r * X[k].r + X[k].i * X[k].i)
+  double ap = (this->_vReal[k + 1] * this->_vReal[k] + this->_vImag[k + 1] * this->_vImag[k]) / (this->_vReal[k] * this->_vReal[k] + this->_vImag[k] * this->_vImag[k]);
+  //   dp = -ap / (1 - ap)
+  double dp = -1 * ap / (1 - ap);
+  //   am = (X[k - 1].r * X[k].r + X[k - 1].i * X[k].i)  /  (X[k].r * X[k].r + X[k].i * X[k].i)
+  double am = (this->_vReal[k - 1] * this->_vReal[k] + this->_vImag[k - 1] * this->_vImag[k]) / (this->_vReal[k] * this->_vReal[k] + this->_vImag[k] * this->_vImag[k]);
+  //   dm = am / (1 - am)
+  double dm = am / (1 - am);
+  //   d = (dp + dm) / 2 + tau(dp * dp) - tau(dm * dm)
+  double d = (dp + dm) / 2 + this->Tau(dp * dp) - this->Tau(dm * dm);
+  //   k’ = k + d
+  return this->IndexToFrequency(k + d);
+}
+
+double arduinoFFT::MajorPeakQuinnsEstimator()
+{
+  return NMajorPeaksQuinnsEstimator(1)[0];
+}
+
+double *arduinoFFT::NMajorPeaksQuinnsEstimator(int n)
+{
+  uint16_t* peakIndexes = this->FindMajorPeakIndexes(n);
+  double foundPeaks[n] = {};
+  // Find all n major peaks
+  for (uint16_t i = 1; i < n; i++)
+  {
+    foundPeaks[i] = this->QuinnsEstimator(peakIndexes[i]);
+  }
+  return foundPeaks;
 }
 
 uint8_t arduinoFFT::Exponent(uint16_t value)
