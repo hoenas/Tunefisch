@@ -5,7 +5,7 @@ arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 /*
 These values can be changed in order to evaluate the functions
 */
-const uint16_t samples = 2048; // This value MUST ALWAYS be a power of 2
+const uint16_t samples = 4096; // This value MUST ALWAYS be a power of 2
 const double samplingFrequency = 5000;
 /*
 These are the input and output vectors
@@ -17,7 +17,7 @@ double vImag[samples];
 // Frequency generator
 uint16_t genAmplitude = 2000;
 uint16_t genOffset = 2047;
-double genFrequency = 0.0;
+double genFrequency = 1000.0;
 double genFrequencyStep = 1;
 double t = 0;
 double deltaT = 1 / samplingFrequency;
@@ -28,7 +28,8 @@ void updateValues()
   for (uint16_t i; i < samples; i++)
   {
     double currentT = t + i * deltaT;
-    vReal[i] = genAmplitude * sin(2 * PI * genFrequency + currentT) + genOffset;
+    vReal[i] = genAmplitude * sin(2 * PI * genFrequency * currentT) + genOffset;
+    vImag[i] = 0;
   }
   t += deltaT;
 }
@@ -58,7 +59,8 @@ void loop()
   Serial.print(genFrequency);
   Serial.println("Hz");
   Serial.print("Peak: ");
-  double foundFrequency = FFT.MajorPeakQuinnsEstimator();
+  // double foundFrequency = FFT.MajorPeakQuinnsEstimator();
+  double foundFrequency = vReal[FFT.FindMajorPeakIndexes(1)[0]];
   Serial.print(foundFrequency);
   Serial.println("Hz");
   updateValues();

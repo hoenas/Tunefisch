@@ -592,7 +592,6 @@ uint16_t *arduinoFFT::FindMajorPeakIndexes(uint16_t n)
       {
         foundPeaks[smallestPeakIndex] = this->_vReal[i];
         foundPeakIndexes[smallestPeakIndex] = i;
-        smallestPeak = this->_vReal[i];
       }
       else
       {
